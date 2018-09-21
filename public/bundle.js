@@ -23849,24 +23849,28 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Header = function Header(_ref) {
+var CardHeader = function CardHeader(_ref) {
     var item = _ref.item;
 
     return _react2.default.createElement(
         "div",
         { className: "alert alert-info", role: "alert" },
         _react2.default.createElement(
-            "h3",
-            { className: "col-xs-7" },
-            item.id + " - " + item.name
-        ),
-        _react2.default.createElement(
-            "h5",
-            { className: "col-xs-4 text-danger" },
+            "div",
+            { className: "row" },
             _react2.default.createElement(
-                "b",
-                null,
-                "Price: " + item.price
+                "h5",
+                { className: "col-md-10" },
+                item.id + " - " + item.name
+            ),
+            _react2.default.createElement(
+                "h5",
+                { className: "col-md-2 text-right text-danger" },
+                _react2.default.createElement(
+                    "b",
+                    null,
+                    item.price
+                )
             )
         )
     );
@@ -23890,8 +23894,8 @@ var Item = function Item(_ref3) {
 
     return _react2.default.createElement(
         "div",
-        { className: "container col-md-4" },
-        _react2.default.createElement(Header, { item: item }),
+        { className: "container col-md-4 shadow p-3 mb-5 bg-white rounded" },
+        _react2.default.createElement(CardHeader, { item: item }),
         _react2.default.createElement(CardBody, { item: item })
     );
 };
@@ -23911,7 +23915,7 @@ exports.default = Item;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
 
 var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
@@ -23925,16 +23929,15 @@ var _Item2 = _interopRequireDefault(_Item);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Grid = function Grid(_ref) {
-  var items = _ref.items;
-  return _react2.default.createElement(
-    'div',
-    { className: 'container row' },
-    ' ',
-    items.map(function (item) {
-      return _react2.default.createElement(_Item2.default, { item: item, key: item.id });
-    }),
-    ' '
-  );
+	var items = _ref.items;
+
+	return _react2.default.createElement(
+		'div',
+		{ className: 'row align-items-top justify-content-center' },
+		items.map(function (item) {
+			return _react2.default.createElement(_Item2.default, { item: item, key: item.id });
+		})
+	);
 };
 
 exports.default = Grid;

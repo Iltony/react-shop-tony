@@ -1,10 +1,12 @@
 import React from 'react'
 
-const Header = function({item}) {
+const CardHeader = function({item}) {
     return (
         <div className="alert alert-info" role="alert">
-            <h3 className="col-xs-7">{`${item.id} - ${item.name}`}</h3>
-            <h5 className="col-xs-4 text-danger"><b>{`Price: ${item.price}`}</b></h5>
+            <div className="row">
+            <h5 className="col-md-10">{`${item.id} - ${item.name}`}</h5>
+            <h5 className="col-md-2 text-right text-danger"><b>{item.price}</b></h5>
+            </div>
         </div>
         );
 }
@@ -22,8 +24,8 @@ const CardBody = function({item}) {
 
 const Item = function({item}) {
     return (
-        <div className="container col-md-4">
-            <Header item={item}/>
+        <div className="container col-md-4 shadow p-3 mb-5 bg-white rounded">
+            <CardHeader item={item}/>
             <CardBody item={item} />
         </div>
     );
