@@ -23944,6 +23944,100 @@ exports.default = Grid;
 
 /***/ }),
 
+/***/ "./src/components/sidebar.js":
+/*!***********************************!*\
+  !*** ./src/components/sidebar.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var SidebarButton = function SidebarButton(_ref) {
+	var isOpen = _ref.isOpen,
+	    openHandler = _ref.openHandler;
+
+	return _react2.default.createElement("input", { type: "button",
+		className: "btn {isOpen ? 'btn-success' : 'btn-danger'} text-right",
+		value: isOpen ? "<<<" : ">>>",
+		onClick: openHandler });
+};
+
+var CategoryLi = function CategoryLi(_ref2) {
+	var category = _ref2.category,
+	    categorySelectedHandler = _ref2.categorySelectedHandler,
+	    isChecked = _ref2.isChecked;
+
+
+	return _react2.default.createElement(
+		"li",
+		{ key: category.id },
+		_react2.default.createElement("input", { type: "checkbox",
+			value: category.id,
+			id: category.id,
+			onChange: categorySelectedHandler,
+			checked: isChecked ? 'checked' : ''
+		}),
+		_react2.default.createElement(
+			"b",
+			null,
+			category.name
+		)
+	);
+};
+
+var Sidebar = function Sidebar(_ref3) {
+	var isOpen = _ref3.isOpen,
+	    openHandler = _ref3.openHandler,
+	    categorySelectedHandler = _ref3.categorySelectedHandler,
+	    categories = _ref3.categories,
+	    selectedCategories = _ref3.selectedCategories;
+
+	if (isOpen) {
+		return _react2.default.createElement(
+			"div",
+			null,
+			_react2.default.createElement(SidebarButton, { isOpen: isOpen, openHandler: openHandler }),
+			_react2.default.createElement(
+				"ul",
+				null,
+				categories.map(function (cat) {
+					return _react2.default.createElement(CategoryLi, {
+						key: cat.id,
+						category: cat,
+						categorySelectedHandler: categorySelectedHandler,
+						isChecked: selectedCategories.indexOf(cat.id) >= 0 });
+				})
+			)
+		);
+	} else {
+		return _react2.default.createElement(
+			"aside",
+			null,
+			_react2.default.createElement(
+				"div",
+				{ className: "col-xm-1 shadow bg-white rounded float" },
+				_react2.default.createElement(SidebarButton, { isOpen: isOpen, openHandler: openHandler })
+			)
+		);
+	}
+};
+
+exports.default = Sidebar;
+
+/***/ }),
+
 /***/ "./src/containers/App.js":
 /*!*******************************!*\
   !*** ./src/containers/App.js ***!
@@ -23955,7 +24049,7 @@ exports.default = Grid;
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+	value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -23967,6 +24061,10 @@ var _react2 = _interopRequireDefault(_react);
 var _grid = __webpack_require__(/*! ../components/grid */ "./src/components/grid.js");
 
 var _grid2 = _interopRequireDefault(_grid);
+
+var _sidebar = __webpack_require__(/*! ../components/sidebar */ "./src/components/sidebar.js");
+
+var _sidebar2 = _interopRequireDefault(_sidebar);
 
 var _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
@@ -23981,38 +24079,105 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var App = function (_React$Component) {
-    _inherits(App, _React$Component);
+	_inherits(App, _React$Component);
 
-    function App(props) {
-        _classCallCheck(this, App);
+	function App(props) {
+		_classCallCheck(this, App);
 
-        var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+		var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
-        _this.state = {
-            items: []
-        };
-        return _this;
-    }
+		_this.state = {
+			items: [],
+			categories: [{
+				"id": 0,
+				"name": "Todos"
+			}],
+			filteredItems: [],
+			selectedCategories: [0],
+			openSidebar: false,
+			loadingCategories: true
+		};
+		_this.openHandler = _this.openHandler.bind(_this);
+		_this.categorySelectedHandler = _this.categorySelectedHandler.bind(_this);
+		return _this;
+	}
 
-    _createClass(App, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            var _this2 = this;
+	_createClass(App, [{
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+			var _this2 = this;
 
-            _axios2.default.get("http://develop.plataforma5.la:3000/api/products").then(function (response) {
-                return response.data;
-            }).then(function (data) {
-                return _this2.setState({ items: data });
-            });
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(_grid2.default, { className: 'container', items: this.state.items });
-        }
-    }]);
+			_axios2.default.get("http://develop.plataforma5.la:3000/api/products").then(function (response) {
+				return response.data;
+			}).then(function (data) {
+				return _this2.setState({ items: data, filteredItems: data });
+			});
 
-    return App;
+			_axios2.default.get("http://develop.plataforma5.la:3000/api/categories").then(function (response) {
+				return response.data;
+			}).then(function (data) {
+				return _this2.setState({
+					categories: _this2.state.categories.concat(data),
+					loadingCategories: false
+				});
+			});
+		}
+	}, {
+		key: 'openHandler',
+		value: function openHandler() {
+			this.setState({ openSidebar: !this.state.openSidebar });
+		}
+	}, {
+		key: 'categorySelectedHandler',
+		value: function categorySelectedHandler(e) {
+			var _this3 = this;
+
+			var id = e.target.value;
+			var value = e.target.checked;
+
+			var selCategories = this.state.selectedCategories;
+
+			this.setState({
+				selectedCategories: value ? selCategories.concat([parseInt(id)]) : selCategories.filter(function (catId) {
+					return catId != id;
+				})
+			}, function () {
+
+				_this3.setState({
+					filteredItems: _this3.state.selectedCategories.length === 0 ? [] : _this3.state.items.filter(function (item) {
+						return _this3.state.selectedCategories.indexOf(0) >= 0 ? false : _this3.state.selectedCategories.indexOf(item.categoryId) < 0;
+					})
+				});
+			});
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var _this4 = this;
+
+			var AppWithSidebar = function AppWithSidebar() {
+				return _react2.default.createElement(
+					'div',
+					{ className: 'body' },
+					_react2.default.createElement(_sidebar2.default, {
+						className: 'container shadow bg-gray rounded fixed',
+						isOpen: _this4.state.openSidebar,
+						openHandler: _this4.openHandler,
+						categorySelectedHandler: _this4.categorySelectedHandler,
+						categories: _this4.state.categories,
+						selectedCategories: _this4.state.selectedCategories }),
+					_react2.default.createElement(_grid2.default, {
+						className: 'container',
+						style: 'margin-left:{this.state.openSidebar ? \'200px\' : \'auto\'}',
+						items: _this4.state.filteredItems })
+				);
+			};
+
+			return _react2.default.createElement(AppWithSidebar, null);
+		}
+	}]);
+
+	return App;
 }(_react2.default.Component);
 
 exports.default = App;
