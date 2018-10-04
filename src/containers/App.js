@@ -1,4 +1,5 @@
 import React from 'react'
+import {Redirect, Switch, Route} from 'react-router-dom'
 import Grid from '../components/grid'
 import Sidebar from '../components/sidebar'
 import axios from 'axios'
@@ -79,9 +80,8 @@ class App extends React.Component {
 	}
 
 	render() {
-		const AppWithSidebar = () => (
-			
-			<div className="d-flex container bg-color">
+		return (			
+			<div className="d-flex container" style={{backgroundImage: '/public/background.jpg'}}>
 				<div className="flex-column">
 					<Sidebar
 						openHandler={this.openHandler}
@@ -93,12 +93,15 @@ class App extends React.Component {
 					/>
 				</div>
 			 	<div>
-					<Grid items={this.state.filteredItems} />
+					<Switch>
+						<Route path='/products' render={(props) => <Grid items={this.state.filteredItems} {...props} />} />
+						<Route path='/products/:categoryId' render={(props) => <Grid items={this.state.filteredItems} {...props} />} />
+
+						<Route path='/' render={() => <Redirect to="/products" />}></Route>
+					</Switch>
 				</div>
 			</div>
 			)
-
-		return (<AppWithSidebar />)
 	}
 }
 
