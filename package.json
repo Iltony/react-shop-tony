@@ -8,7 +8,7 @@
     "start": "nodemon app.js",
     "seed": "node seed.js",
     "build": "webpack -w",
-    "serve": "webpack-dev-server",
+    "serve": "webpack-dev-server --open",
     "flow": "flow check"
   },
   "repository": {
@@ -46,6 +46,7 @@
     "json-loader": "^0.5.7",
     "style-loader": "^0.23.0",
     "webpack": "^4.6.0",
-    "webpack-cli": "^2.0.15"
+    "webpack-cli": "^2.0.15",
+    "webpack-dev-server": "^3.1.9"
   }
 }

@@ -23904,6 +23904,46 @@ exports.default = Item;
 
 /***/ }),
 
+/***/ "./src/components/categoryListItem.js":
+/*!********************************************!*\
+  !*** ./src/components/categoryListItem.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var CategoryListItem = function CategoryListItem(_ref) {
+  var category = _ref.category,
+      categorySelectedHandler = _ref.categorySelectedHandler,
+      isChecked = _ref.isChecked;
+
+  return _react2.default.createElement(
+    'li',
+    {
+      key: category.id,
+      id: category.id,
+      onClick: categorySelectedHandler,
+      className: isChecked ? 'list-group-item list-group-item-info' : 'list-group-item' },
+    category.name
+  );
+};
+
+exports.default = CategoryListItem;
+
+/***/ }),
+
 /***/ "./src/components/grid.js":
 /*!********************************!*\
   !*** ./src/components/grid.js ***!
@@ -23962,79 +24002,89 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
+var _sidebarButton = __webpack_require__(/*! ./sidebarButton */ "./src/components/sidebarButton.js");
+
+var _sidebarButton2 = _interopRequireDefault(_sidebarButton);
+
+var _categoryListItem = __webpack_require__(/*! ./categoryListItem */ "./src/components/categoryListItem.js");
+
+var _categoryListItem2 = _interopRequireDefault(_categoryListItem);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var isInListOrAll = function isInListOrAll(list, value, allCategories) {
+	return list.indexOf(value) >= 0 || allCategories;
+};
+
+var Sidebar = function Sidebar(_ref) {
+	var isOpen = _ref.isOpen,
+	    openHandler = _ref.openHandler,
+	    categorySelectedHandler = _ref.categorySelectedHandler,
+	    categories = _ref.categories,
+	    selectedCategories = _ref.selectedCategories,
+	    allCategories = _ref.allCategories;
+
+	if (isOpen) {
+		return _react2.default.createElement(
+			'div',
+			null,
+			_react2.default.createElement(_sidebarButton2.default, { isOpen: isOpen, openHandler: openHandler }),
+			_react2.default.createElement(
+				'ul',
+				{ className: 'list-group ml-25' },
+				categories.map(function (cat) {
+					return _react2.default.createElement(_categoryListItem2.default, {
+						key: cat.id,
+						category: cat,
+						categorySelectedHandler: categorySelectedHandler,
+						isChecked: isInListOrAll(selectedCategories, cat.id, allCategories) });
+				})
+			)
+		);
+	} else {
+		return _react2.default.createElement(
+			'div',
+			{ className: 'col-md-2 text-align-right' },
+			_react2.default.createElement(_sidebarButton2.default, { isOpen: isOpen, openHandler: openHandler })
+		);
+	}
+};
+
+exports.default = Sidebar;
+
+/***/ }),
+
+/***/ "./src/components/sidebarButton.js":
+/*!*****************************************!*\
+  !*** ./src/components/sidebarButton.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var SidebarButton = function SidebarButton(_ref) {
 	var isOpen = _ref.isOpen,
 	    openHandler = _ref.openHandler;
 
-	return _react2.default.createElement("input", { type: "button",
-		className: "btn {isOpen ? 'btn-success' : 'btn-danger'} text-right",
+	return _react2.default.createElement('input', { type: 'button',
+		className: 'btn ' + (isOpen ? 'btn-success' : 'btn-info'),
 		value: isOpen ? "<<<" : ">>>",
 		onClick: openHandler });
 };
 
-var CategoryLi = function CategoryLi(_ref2) {
-	var category = _ref2.category,
-	    categorySelectedHandler = _ref2.categorySelectedHandler,
-	    isChecked = _ref2.isChecked;
-
-
-	return _react2.default.createElement(
-		"li",
-		{ key: category.id },
-		_react2.default.createElement("input", { type: "checkbox",
-			value: category.id,
-			id: category.id,
-			onChange: categorySelectedHandler,
-			checked: isChecked ? 'checked' : ''
-		}),
-		_react2.default.createElement(
-			"b",
-			null,
-			category.name
-		)
-	);
-};
-
-var Sidebar = function Sidebar(_ref3) {
-	var isOpen = _ref3.isOpen,
-	    openHandler = _ref3.openHandler,
-	    categorySelectedHandler = _ref3.categorySelectedHandler,
-	    categories = _ref3.categories,
-	    selectedCategories = _ref3.selectedCategories;
-
-	if (isOpen) {
-		return _react2.default.createElement(
-			"div",
-			null,
-			_react2.default.createElement(SidebarButton, { isOpen: isOpen, openHandler: openHandler }),
-			_react2.default.createElement(
-				"ul",
-				null,
-				categories.map(function (cat) {
-					return _react2.default.createElement(CategoryLi, {
-						key: cat.id,
-						category: cat,
-						categorySelectedHandler: categorySelectedHandler,
-						isChecked: selectedCategories.indexOf(cat.id) >= 0 });
-				})
-			)
-		);
-	} else {
-		return _react2.default.createElement(
-			"aside",
-			null,
-			_react2.default.createElement(
-				"div",
-				{ className: "col-xm-1 shadow bg-white rounded float" },
-				_react2.default.createElement(SidebarButton, { isOpen: isOpen, openHandler: openHandler })
-			)
-		);
-	}
-};
-
-exports.default = Sidebar;
+exports.default = SidebarButton;
 
 /***/ }),
 
@@ -24089,11 +24139,12 @@ var App = function (_React$Component) {
 		_this.state = {
 			items: [],
 			categories: [{
-				"id": 0,
-				"name": "Todos"
+				'id': 0,
+				'name': 'Todos'
 			}],
 			filteredItems: [],
-			selectedCategories: [0],
+			selectedCategories: [],
+			allCategories: true,
 			openSidebar: false,
 			loadingCategories: true
 		};
@@ -24132,23 +24183,43 @@ var App = function (_React$Component) {
 		value: function categorySelectedHandler(e) {
 			var _this3 = this;
 
-			var id = e.target.value;
-			var value = e.target.checked;
+			var id = parseInt(e.target.id);
 
-			var selCategories = this.state.selectedCategories;
+			if (id === 0) {
+				if (!this.state.allCategories) {
+					this.setState({
+						filteredItems: this.state.items,
+						selectedCategories: this.state.categories.map(function (cat) {
+							return cat.id;
+						}),
+						allCategories: true
+					});
+				} else {
+					this.setState({
+						filteredItems: [],
+						selectedCategories: [],
+						allCategories: false
+					});
+				}
+			} else {
+				var isSelected = this.state.selectedCategories.indexOf(id) >= 0;
+				var selCategories = this.state.selectedCategories;
+				this.setState({
+					selectedCategories: !isSelected ? selCategories.concat([parseInt(id)]) : selCategories.filter(function (catId) {
+						return catId != id;
+					}),
+					allCategories: false
+				}, function () {
+					var hasCategories = _this3.state.selectedCategories.length > 0;
+					var filteredItems = _this3.state.items.filter(function (item) {
+						return _this3.state.selectedCategories.indexOf(item.categoryId) < 0;
+					});
 
-			this.setState({
-				selectedCategories: value ? selCategories.concat([parseInt(id)]) : selCategories.filter(function (catId) {
-					return catId != id;
-				})
-			}, function () {
-
-				_this3.setState({
-					filteredItems: _this3.state.selectedCategories.length === 0 ? [] : _this3.state.items.filter(function (item) {
-						return _this3.state.selectedCategories.indexOf(0) >= 0 ? false : _this3.state.selectedCategories.indexOf(item.categoryId) < 0;
-					})
+					_this3.setState({
+						filteredItems: hasCategories ? [] : filteredItems
+					});
 				});
-			});
+			}
 		}
 	}, {
 		key: 'render',
@@ -24158,18 +24229,24 @@ var App = function (_React$Component) {
 			var AppWithSidebar = function AppWithSidebar() {
 				return _react2.default.createElement(
 					'div',
-					{ className: 'body' },
-					_react2.default.createElement(_sidebar2.default, {
-						className: 'container shadow bg-gray rounded fixed',
-						isOpen: _this4.state.openSidebar,
-						openHandler: _this4.openHandler,
-						categorySelectedHandler: _this4.categorySelectedHandler,
-						categories: _this4.state.categories,
-						selectedCategories: _this4.state.selectedCategories }),
-					_react2.default.createElement(_grid2.default, {
-						className: 'container',
-						style: 'margin-left:{this.state.openSidebar ? \'200px\' : \'auto\'}',
-						items: _this4.state.filteredItems })
+					null,
+					_react2.default.createElement(
+						'div',
+						{ className: 'sidebar navbar-user-container h-100' },
+						_react2.default.createElement(_sidebar2.default, {
+							openHandler: _this4.openHandler,
+							categorySelectedHandler: _this4.categorySelectedHandler,
+							isOpen: _this4.state.openSidebar,
+							categories: _this4.state.categories,
+							selectedCategories: _this4.state.selectedCategories,
+							allCategories: _this4.state.allCategories
+						})
+					),
+					_react2.default.createElement(
+						'div',
+						null,
+						_react2.default.createElement(_grid2.default, { items: _this4.state.filteredItems })
+					)
 				);
 			};
 
