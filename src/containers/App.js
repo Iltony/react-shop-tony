@@ -81,7 +81,7 @@ class App extends React.Component {
 	render() {
 		const AppWithSidebar = () => (
 			
-			<div className="d-flex container bg-red">
+			<div className="d-flex container bg-color">
 				<div className="flex-column">
 					<Sidebar
 						openHandler={this.openHandler}
