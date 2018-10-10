@@ -1,5 +1,5 @@
 import React from 'react'
-import {Redirect, Switch, Route} from 'react-router-dom'
+import { Redirect, Switch, Route } from 'react-router-dom'
 import Grid from '../components/grid'
 import Sidebar from '../components/sidebar'
 import axios from 'axios'
@@ -10,11 +10,7 @@ class App extends React.Component {
 
 		this.state = {
 			items: [],
-			categories: [{
-				'id': 0,
-				'name': 'Todos'
-			}],
-			filteredItems: [],
+			categories: [{ 'id': 0, 'name': 'Todos' }],
 			selectedCategories: [],
 			allCategories: true,
 			openSidebar: false,
@@ -27,7 +23,7 @@ class App extends React.Component {
 	componentDidMount() {
 		axios.get("http://develop.plataforma5.la:3000/api/products")
 			.then(response => response.data)
-			.then(data => this.setState({ items: data, filteredItems: data }))
+			.then(data => this.setState({ items: data }))
 
 		axios.get("http://develop.plataforma5.la:3000/api/categories")
 			.then(response => response.data)
@@ -45,19 +41,11 @@ class App extends React.Component {
 		const id = parseInt(e.target.id);
 
 		if (id === 0) {
-			if (!this.state.allCategories) {
-				this.setState({
-					filteredItems: this.state.items,
-					selectedCategories: this.state.categories.map(cat => cat.id),
-					allCategories: true,
-				})
-			} else {
-				this.setState({
-					filteredItems: [],
-					selectedCategories: [],
-					allCategories: false,
-				})
-			}
+
+			this.setState({
+				selectedCategories: !this.state.allCategories ? this.state.categories.map(cat => cat.id): [],
+				allCategories: !this.state.allCategories,
+			})
 		} else {
 			let isSelected = (this.state.selectedCategories.indexOf(id) >= 0)
 			const selCategories = this.state.selectedCategories
@@ -66,22 +54,13 @@ class App extends React.Component {
 					selCategories.concat([parseInt(id)]) :
 					selCategories.filter(catId => catId != id),
 				allCategories: false
-			},
-				() => {
-					const hasCategories = (this.state.selectedCategories.length > 0)	
-					const filteredItems = this.state.items.filter(
-						item => this.state.selectedCategories.indexOf(item.categoryId) >= 0)
-	
-					this.setState({
-						filteredItems: hasCategories ? filteredItems : []
-					})
-				})
+			})
 		}
 	}
 
 	render() {
-		return (			
-			<div className="d-flex container" style={{backgroundImage: '/public/background.jpg'}}>
+		return (
+			<div className="d-flex container bg-dark bt-5">
 				<div className="flex-column">
 					<Sidebar
 						openHandler={this.openHandler}
@@ -92,16 +71,26 @@ class App extends React.Component {
 						allCategories={this.state.allCategories}
 					/>
 				</div>
-			 	<div>
+				<div>
 					<Switch>
-						<Route path='/products' render={(props) => <Grid items={this.state.filteredItems} {...props} />} />
-						<Route path='/products/:categoryId' render={(props) => <Grid items={this.state.filteredItems} {...props} />} />
+						<Route path='/products' render={(props) => 
+							<Grid
+								{... {...this.state, ...props }}
+							/>}
+						 />
+
+						<Route path='/products/:categoryId'
+							render={(props, match) => 
+							<Grid 
+								{...{ ...this.state, selectedCategories: [match.params.categoryId], ...props }}
+							/>} 
+						/>
 
 						<Route path='/' render={() => <Redirect to="/products" />}></Route>
 					</Switch>
 				</div>
 			</div>
-			)
+		)
 	}
 }
 

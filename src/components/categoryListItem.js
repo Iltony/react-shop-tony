@@ -10,7 +10,7 @@ const CategoryListItem = ({
             key={category.id}
             id={category.id} 
             onClick={categorySelectedHandler}
-            className={isChecked ? 'list-group-item list-group-item-info' : 'list-group-item'}>
+            className={`mb-2 rounded shadow list-group-item ${isChecked ? 'text-dark bg-light' : 'text-white bg-dark'}`}>
                 {category.name}
 		</li>
 	);
