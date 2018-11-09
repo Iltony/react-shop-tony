@@ -1,31 +1,19 @@
 import Item from './Item'
 import React, {Fragment} from 'react'
 
-const getSelectedCategoriesTitle = (categories, selectedCategories, allCategories) => {
-	return 	allCategories ?
-			categories.map(x => x.name).join(', ') :
-			categories.filter(x => selectedCategories.indexOf(x.id) >= 0).map(x => x.name).join(', ')
-}
-
-const getFilteredItems = (items, selectedCategories, allCategories) => {
-	return allCategories ?
-			items
-			: items.filter(x => selectedCategories.indexOf(x.categoryId) < 0)
-}
-
-const Grid = ({items, categories, selectedCategories, allCategories}) => {
-	return ( 
+const Grid = ({ filteredItems, filterTitle }) => (
 		<Fragment>
-			<div class="panel panel-heading bg-white mt-2">
-				{`Categorias: ${getSelectedCategoriesTitle(categories, selectedCategories, allCategories)}`}
+			<div className="panel panel-heading bg-light text-info mt-2 card-body rounded shadow">
+				<h4 className="card-title">{`(${filteredItems.length}) Items`}</h4>
+				<h6 className="card-subtitle mb-2 text-muted">{`${filterTitle}`}</h6>
 			</div>
 
-			<div className="d-flex flex-wrap mt-2"> 
+			<div className="d-flex flex-wrap mt-2">
 				{
-					getFilteredItems(items, selectedCategories, allCategories).map(item => <Item item={item} key={item.id} />)
+					filteredItems.map(item => (<Item item={item} key={item.id} />))
 				}
 			</div>
-		</Fragment>)
-};
+		</Fragment>);
+
 
 export default Grid;
