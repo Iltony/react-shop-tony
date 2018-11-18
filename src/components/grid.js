@@ -1,4 +1,4 @@
-import Item from './Item'
+import Item from './item'
 import React, {Fragment} from 'react'
 
 const Grid = ({ filteredItems, filterTitle }) => (

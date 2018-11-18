@@ -4,17 +4,19 @@ import Grid from '../components/grid'
 import Sidebar from '../components/sidebar'
 import axios from 'axios'
 import {ALL_CATEGORIES_ID} from '../constants'
+import FullItem from '../components/fullItem';
 
 class App extends React.Component {
 	constructor(props) {
 		super(props)
-		
 		this.state = {
 			items: [],
 			categories: [],
 			selectedCategories: this.props.selectedCategory ? [this.props.selectedCategory] : [],
+			selectedProduct: this.props.selectedProduct ? this.props.selectedProduct : null,
 			openSidebar: false,
-			loadingCategories: true
+			loadingCategories: true,
+			loadingProducts: true
 		}
 		this.openHandler = this.openHandler.bind(this)
 		this.categorySelectedHandler = this.categorySelectedHandler.bind(this)
@@ -34,7 +36,10 @@ class App extends React.Component {
 	componentDidMount() {
 		axios.get("http://develop.plataforma5.la:3000/api/products")
 			.then(response => response.data)
-			.then(data => this.setState({ items: data }))
+			.then(data => this.setState({ 
+				items: data,
+				loadingProducts: false
+			}))
 
 		axios.get("http://develop.plataforma5.la:3000/api/categories")
 			.then(response => response.data)
@@ -77,6 +82,12 @@ class App extends React.Component {
 	getFilteredItems(){
 		var result = []
 
+		if (!this.state.loadingProducts && this.state.selectedProduct) {
+			var selectedItem = this.state.items.find(x => x.id === parseInt(this.state.selectedProduct))
+			console.log([selectedItem])
+			return [selectedItem]
+		}
+
 		if (this.allCategories()) { 
 			return this.state.items
 		} else {
@@ -89,45 +100,64 @@ class App extends React.Component {
 	}
 
 	render() {
-
+		const isLoading = this.state.loadingProducts
 		const filteredItems = this.getFilteredItems()
-		const hasFilteredItems = (filteredItems.length > 0)
-
+		const onlyProduct = this.state.selectedProduct && !isLoading && filteredItems.length > 0
+		const hasFilteredItems = !onlyProduct && (filteredItems.length > 0)
+		const noneSelectedMessage = !onlyProduct && !hasFilteredItems
+		
 		return (
 			<div className="d-flex container bg-dark bt-5">
-					
-				<div className="flex-column">
-					<Sidebar
-						openHandler={this.openHandler}
-						categorySelectedHandler={this.categorySelectedHandler}
-						isOpen={this.state.openSidebar}
-						categories={this.state.categories}
-						selectedCategories={this.state.selectedCategories}
-						allCategoriesSelected={this.allCategories()}
-					/>
-				</div>
-				<div className="full-width">
-					<div className="full-width text-light">
-						<h2>Electroni<span className="text-info"><b>K</b></span>arina</h2>
-						<img style={{maxWidth:'95%'}}  src={'/public/electronics.png'} />
+
+				{
+					isLoading && <div className="text-white">Loading...</div>				
+				}
+
+				{ !isLoading && 
+				[	
+					<div className="flex-column" key="sidebar">
+						{ !onlyProduct && 
+							<Sidebar
+								openHandler={this.openHandler}
+								categorySelectedHandler={this.categorySelectedHandler}
+								isOpen={this.state.openSidebar}
+								categories={this.state.categories}
+								selectedCategories={this.state.selectedCategories}
+								allCategoriesSelected={this.allCategories()}
+							/>
+						}						
+					</div>,
+
+					<div className="container-fluid pb-4" key="grid">
+							<div className="full-width text-light">
+								<h2>Electroni<span className="text-info"><b>K</b></span>arina</h2>
+								{!onlyProduct && 
+										<img style={{maxWidth:'95%'}}  src={'/public/electronics.png'} />
+								}
+							</div>
+
+						{ onlyProduct && 
+							<FullItem						
+								item = {filteredItems[0]}
+							/>
+						}
+
+						{ hasFilteredItems && 
+					 		<Grid						
+					 			filteredItems = {this.getFilteredItems()}
+					 			filterTitle = {this.getSelectedCategoriesTitle()}
+					 		/>
+					 	}
+
+					 	{ noneSelectedMessage && 
+					 		<div className="Justify-center text-align-middle h-100 text-info">
+					 			<h5>Choose a category to start</h5>
+					 		</div>
+					 	}
 					</div>
-					{ hasFilteredItems && 
-						<Grid						
-							filteredItems = {this.getFilteredItems()}
-							filterTitle = {this.getSelectedCategoriesTitle()}
-						/>
-					}
 
-					{ !hasFilteredItems && 
-						<div className="Justify-center text-align-middle h-100 text-info">
-							<h5>Choose a category to start</h5>
-						</div>
-					}
-
-
-				</div>
-			</div>
-		)
+				]}
+			</div>)
 	}
 }
 

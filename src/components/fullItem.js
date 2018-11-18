@@ -1,10 +1,10 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+//import { CardHeader, CardBody } from "./item";
 
 export const CardHeader = function({item}) {
     return (
-        <div className="container text-center pt-3 justify-content" key={item.id}>
-            <h6 className="row">{`${item.id} - ${item.name}`}</h6>
+        <div className="container bg-dark text-center mt-5 p-4 rounded shadow" key={item.id}>
+            <h6 className="row text-white">{`${item.id} - ${item.name}`}</h6>
             <h4 className="row text-center text-danger"><b>{item.price}</b></h4>
         </div>
         );
@@ -17,19 +17,21 @@ export const CardBody = function({item}) {
             //src={item.image} 
             src="/public/loop01.jpg"
             className="img-rounded" 
-            style={{maxWidth:'95%', maxHeight: '200px'}} 
+            style={{maxWidth:'95%', maxHeight: '450px'}} 
             alt={item.name}>
         </img>
     </div>)
 }
 
-const Item = function({item}) {
+const FullItem = function({item}) {
     return (
-        <div className="col-md-4 shadow card border-dark mtb-5" onClick={()=> window.location.href(`/products/${item.id}`)} >
-                <CardHeader item={item} />
-                <CardBody item={item} />
+        <div className="container-fluid shadow card">
+            <CardHeader item={item}/>
+            <CardBody item={item} />
         </div>
-    )
-}
+    );
+} 
 
-export default Item;
+
+
+export default FullItem;
