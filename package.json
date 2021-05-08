@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/Iltony/react-shop-tony#readme",
   "dependencies": {
-    "axios": ">=0.21.1"
+    "axios": ">=0.21.1",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "faker": "^4.1.0",
